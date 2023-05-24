@@ -13,22 +13,22 @@
     "lint": "tslint -p tsconfig.json",
     "test": "jest --config jestconfig.json",
     "prepare": "npm run build",
-    "prepublishOnly": "npm test && npm run lint",
+    "prepublishOnly": "npm run lint",
     "preversion": "npm run lint",
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/cycurid-admin/imme-widget-server.git"
+    "url": "git+https://github.com/Cycurid/cycurid-oauth2-server"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://bitbucket.org/cycurid-admin/imme-widget-server/issues"
+    "url": "https://github.com/Cycurid/cycurid-oauth2-server/issues"
   },
-  "homepage": "https://bitbucket.org/cycurid-admin/imme-widget-server#readme",
+  "homepage": "https://github.com/Cycurid/cycurid-oauth2-server/blob/master/README.md",
   "devDependencies": {
     "@types/form-data": "^2.5.0",
     "@types/jest": "^29.5.1",

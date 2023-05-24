@@ -44,8 +44,8 @@ export async function getToken(code: string, clientID: string, clientSecret: str
 
     const requestOptions: FetchOptions = {
       method: 'POST',
-      headers: headers,
-      body: body,
+      headers,
+      body,
     };
 
     const response = await fetch(`${OAUTH_SERVER}/oauth/token`, requestOptions);
@@ -60,7 +60,7 @@ export async function getToken(code: string, clientID: string, clientSecret: str
 
     if (!responseData.access_token) {
       return {
-        status: 400, // Or a custom status code that fits this error situation
+        status: 400,
         statusText: 'Failed to obtain access token',
       };
     }
@@ -69,7 +69,7 @@ export async function getToken(code: string, clientID: string, clientSecret: str
   } catch (error: unknown) {
     if (error instanceof Error) {
       return {
-        status: 500, // Assign a default status code
+        status: 500,
         statusText: error.message,
       };
     }
