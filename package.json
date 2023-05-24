@@ -30,7 +30,9 @@
   },
   "homepage": "https://bitbucket.org/cycurid-admin/imme-widget-server#readme",
   "devDependencies": {
+    "@types/form-data": "^2.5.0",
     "@types/jest": "^29.5.1",
+    "@types/node-fetch": "^2.6.4",
     "jest": "^29.5.0",
     "prettier": "^2.8.8",
     "ts-jest": "^29.1.0",
@@ -41,7 +43,8 @@
   "dependencies": {
     "axios": "^1.4.0",
     "buffer": "^6.0.3",
+    "dotenv": "^16.0.0",
     "form-data": "^4.0.0",
-    "node-fetch": "^3.3.1"
+    "node-fetch": "^2.6.7"
   }
 }

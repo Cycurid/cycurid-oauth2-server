@@ -1,66 +1,63 @@
 import fetch, { Headers } from 'node-fetch';
+import FormData from 'form-data';
 import { OAUTH_SERVER } from './constants';
 
-interface TokenData {
-  code: string;
-  client_id: string;
-  client_secret: string;
-}
-
 interface TokenResponse {
-  status?: number;
+  access_token: string;
   statusText: string;
 }
 
-export async function getToken(data: TokenData): Promise<TokenResponse> {
+interface ErrorResponse {
+  status?: number; // Add the optional 'status' property
+  statusText?: string; // Add the optional 'statusText' property
+}
+
+export async function getToken(
+  code: string,
+  clientID: string,
+  clientSecret: string,
+): Promise<string | undefined | ErrorResponse> {
   try {
-    if (!data.code) {
-      throw { statusText: 'Missing code' };
-    }
-    if (!data.client_id) {
-      throw { statusText: 'Missing client_id' };
-    }
-    if (!data.client_secret) {
-      throw { statusText: 'Missing client_secret' };
-    }
+    console.log(code, clientID, clientSecret);
 
-    const info = `${data.client_id}:${data.client_secret}`;
-    let response: TokenResponse;
+    const data = `${clientID}:${clientSecret}`;
+    let token: string;
 
-    let buff = Buffer.from(info);
-    let base64data = buff.toString('base64');
-    var myHeaders = new Headers();
+    const buff = Buffer.from(data);
+    const base64data = buff.toString('base64');
+    const myHeaders = new Headers();
     myHeaders.append('Authorization', `Basic ${base64data}`);
 
-    var formdata = new FormData();
+    const formdata = new FormData();
     formdata.append('grant_type', 'authorization_code');
     formdata.append('scope', 'username');
-    formdata.append('code', data.code);
+    formdata.append('code', code);
 
-    var requestOptions = {
+    const requestOptions = {
       method: 'POST',
       headers: myHeaders,
       body: formdata,
     };
 
-    const res = await fetch(`${OAUTH_SERVER}/oauth/token`, requestOptions);
-    if (res.status !== 200) {
-      throw res;
+    const response = await fetch(`${OAUTH_SERVER}/oauth/token`, requestOptions);
+
+    const responseData: TokenResponse = await response.json();
+    if (response.status !== 200) {
+      throw response;
+    } else if (responseData.access_token) {
+      token = responseData.access_token;
+
+      return token;
+    } else if (responseData.statusText) {
+      return responseData.statusText;
     }
 
-    const text = await res.text();
-    response = JSON.parse(text);
-
-    return response;
+    return undefined;
   } catch (error) {
-    if ((error as { status: number }).status) {
-      return {
-        status: (error as { status: number }).status,
-        statusText: (error as { statusText: string }).statusText,
-      };
-    }
+    const response = error as Response;
     return {
-      statusText: (error as { statusText: string }).statusText,
+      status: response.status,
+      statusText: response.statusText,
     };
   }
 }
