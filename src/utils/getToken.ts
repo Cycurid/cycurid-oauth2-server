@@ -18,8 +18,6 @@ export async function getToken(
   clientSecret: string,
 ): Promise<string | undefined | ErrorResponse> {
   try {
-    console.log(code, clientID, clientSecret);
-
     const data = `${clientID}:${clientSecret}`;
     let token: string;
 
