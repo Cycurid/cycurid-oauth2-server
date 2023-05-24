@@ -24,26 +24,30 @@ const { getToken, getUserInfo } = require('cycurid-oauth2-server');
 
 ### Supported methods
 
-#### getToken
+### <u>getToken</u>
 
 The getToken function retrieves an access token from an OAuth 2.0 server using the authorization code obtained from the CycurID barcode.
 
-### Example
+#### Example
 
 ```javascript
+
     const tokenResponse = await getToken(code: string, clientID: string, clientSecret: string)
+    
 ```
 
 On successful exchange, the function provides an access token that can be used to fetch user data as defined in the scope. If an error occurs during the process, an ErrorResponse is returned, providing details on the error encountered.
 
-#### getUserData
+### <u>getUserData</u>
 
 The getUserInfo function in the cycurid-oauth2-server package is used to retrieve user information from an OAuth 2.0 server using the access token obtained through the getToken function.
 
-### Example
+#### Example
 
 ```javascript
+
    const userInfo = await getUserInfo(tokenResponse:string);
+   
 ```
 
 If the call is successful, userInfo will contain the user information as per the defined scope. If an error occurs during the process, userInfo will contain an error message detailing the problem.
