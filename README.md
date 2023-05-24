@@ -43,7 +43,7 @@ The getUserInfo function in the cycurid-oauth2-server package is used to retriev
 #### Example
 
 ```javascript
-const userInfo = await getUserInfo(tokenResponse:string);   
+const userInfo = await getUserInfo(tokenResponse:string);
 ```
 
 If the call is successful, userInfo will contain the user information as per the defined scope. If an error occurs during the process, userInfo will contain an error message detailing the problem.
