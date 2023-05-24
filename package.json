@@ -1,5 +1,5 @@
 {
-  "name": "imme-widget-server",
+  "name": "cycurid-oauth2-server",
   "version": "0.1.0",
   "description": "imme widget server",
   "main": "lib/index.js",
