@@ -49,6 +49,8 @@ On successful exchange, the function provides an access token that can be used t
 
 #### Error Handling
 
+#### Error Handling
+
 The `getToken` function handles the following error scenarios:
 
 ##### 1. Missing or Invalid Arguments
