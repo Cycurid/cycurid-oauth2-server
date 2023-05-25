@@ -2,15 +2,22 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { OAUTH_SERVER } from './constants';
 
 interface UserInfoResponse {
-  status?: number;
+  access_token: string;
   statusText: string;
-  message?: string;
+}
+
+interface CustomError extends Error {
+  status?: number;
+  statusText?: string;
 }
 
 export async function getUserInfo(token: string): Promise<UserInfoResponse> {
   try {
     if (!token) {
-      throw { statusText: 'Token is required.' };
+      const error: CustomError = new Error('Token is required.');
+      error.statusText = 'Token is required.';
+      error.status = 400;
+      throw error;
     }
 
     const options: AxiosRequestConfig = {
@@ -23,20 +30,22 @@ export async function getUserInfo(token: string): Promise<UserInfoResponse> {
 
     const response = await axios(options);
 
-    return response.data;
-  } catch (error) {
-    if ((error as { response: { status: number; statusText: string; data: { message: string } } }).response?.status) {
-      return {
-        status: (error as { response: { status: number; statusText: string; data: { message: string } } }).response
-          .status,
-        statusText: (error as { response: { status: number; statusText: string; data: { message: string } } }).response
-          .statusText,
-        message: (error as { response: { status: number; statusText: string; data: { message: string } } }).response
-          .data.message,
-      };
+    if (response.status !== 200) {
+      const error: CustomError = new Error(`Request failed with status code ${response.status} ${response.statusText}`);
+      error.status = response.status;
+      error.statusText = response.statusText;
+      throw error;
     }
-    return {
-      statusText: (error as { statusText: string }).statusText,
-    };
+
+    if (!response.data) {
+      const error: CustomError = new Error('Failed to obtain user data from server');
+      error.status = 400;
+      error.statusText = 'Bad Request';
+      throw error;
+    }
+
+    return response.data;
+  } catch (error: any) {
+    throw error;
   }
 }

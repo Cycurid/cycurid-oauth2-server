@@ -7,9 +7,9 @@ interface TokenResponse {
   statusText: string;
 }
 
-interface ErrorResponse {
-  status: number;
-  statusText: string;
+interface CustomError extends Error {
+  status?: number;
+  statusText?: string;
 }
 
 interface FetchOptions extends RequestInit {
@@ -33,9 +33,12 @@ function createBody(code: string): FormData {
   return formdata;
 }
 
-export async function getToken(code: string, clientID: string, clientSecret: string): Promise<string | ErrorResponse> {
+export async function getToken(code: string, clientID: string, clientSecret: string): Promise<string> {
   if (!code || !clientID || !clientSecret) {
-    throw new Error('All arguments must be provided and be non-empty strings');
+    const error: CustomError = new Error('All arguments must be provided and be non-empty strings');
+    error.status = 400;
+    error.statusText = 'All arguments must be provided and be non-empty strings';
+    throw error;
   }
 
   try {
@@ -52,28 +55,21 @@ export async function getToken(code: string, clientID: string, clientSecret: str
     const responseData: TokenResponse = await response.json();
 
     if (response.status !== 200) {
-      return {
-        status: response.status,
-        statusText: `Request failed with status code ${response.status}`,
-      };
+      const error: CustomError = new Error(`Request failed with status code ${response.status} ${response.statusText}`);
+      error.status = response.status;
+      error.statusText = response.statusText;
+      throw error;
     }
 
     if (!responseData.access_token) {
-      return {
-        status: 400,
-        statusText: 'Failed to obtain access token',
-      };
+      const error: CustomError = new Error('Failed to obtain access token');
+      error.status = 400;
+      error.statusText = 'Bad Request';
+      throw error;
     }
 
     return responseData.access_token;
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      return {
-        status: 500,
-        statusText: error.message,
-      };
-    }
-
-    throw new Error('Unknown error occurred.');
+  } catch (error) {
+    throw error;
   }
 }
